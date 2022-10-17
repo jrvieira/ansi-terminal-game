@@ -18,6 +18,8 @@ import qualified Data.Function       as F ( (&) )
 import qualified Data.List           as L
 import qualified System.Console.ANSI as CA
 
+import Data.Word ( Word8 )
+import Data.Colour.RGBSpace ( Colour )
 
 -----------
 -- TYPES --
@@ -128,6 +130,13 @@ bold p = mapPlane boldCell p
 invert :: Plane -> Plane
 invert p = mapPlane reverseCell p
 
+-- | Set RGB color
+rgbColor :: Colour Float -> Plane -> Plane
+rgbColor k p = mapPlane (rgbColorCell k) p
+
+-- | Set Palette color
+paletteColor :: Word8 -> Plane -> Plane
+paletteColor k p = mapPlane (paletteColorCell k) p
 
 
 -------------

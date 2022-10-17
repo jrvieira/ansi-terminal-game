@@ -283,8 +283,10 @@ putCellStyle c = CA.setSGR ([CA.Reset] ++ sgrb ++ sgrr ++ sgrc) >>
           sgrr | isReversed c = [CA.SetSwapForegroundBackground True]
                | otherwise    = []
 
-          sgrc | Just (k, i) <- cellColor c = [CA.SetColor CA.Foreground i k]
-               | otherwise                  = []
+          sgrc | Just (ANSIColorInfo (k, i)) <- cellColor c = [CA.SetColor CA.Foreground i k]
+               | Just (RGBColorInfo k)       <- cellColor c = [CA.SetRGBColor CA.Foreground k]
+               | Just (PaletteColorInfo k)   <- cellColor c = [CA.SetPaletteColor CA.Foreground k]
+               | otherwise                                  = []
 
 oneTickSec :: Integer
 oneTickSec = 10 ^ (6 :: Integer)

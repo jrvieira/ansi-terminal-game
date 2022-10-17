@@ -18,6 +18,8 @@ import qualified Data.Tuple          as T
 import qualified GHC.Generics        as G
 import qualified System.Console.ANSI as CA
 
+import Data.Word ( Word8 )
+import Data.Colour.RGBSpace ( Colour )
 
 ----------------
 -- DATA TYPES --
@@ -39,10 +41,14 @@ type Height = Int
 type Bold     = Bool
 type Reversed = Bool
 
+data ColorInfo = ANSIColorInfo (CA.Color, CA.ColorIntensity) | RGBColorInfo (Colour Float) | PaletteColorInfo Word8
+          deriving (Show, Eq, Ord)
+
+instance Eq a => Ord (Colour a) where
+   compare _ _ = EQ
+
 -- can be an ASCIIChar or a special, transparent character
-data Cell = CellChar Char Bold
-                     Reversed (Maybe (CA.Color, CA.ColorIntensity))
-          | Transparent
+data Cell = CellChar Char Bold Reversed (Maybe ColorInfo) | Transparent
           deriving (Show, Eq, Ord, G.Generic)
         -- I found no meaningful speed improvements by making this
         -- only w/ 1 constructor.
@@ -88,8 +94,16 @@ creaCell ch = CellChar chm False False Nothing
           chm = win32SafeChar ch
 
 colorCell :: CA.Color -> CA.ColorIntensity -> Cell -> Cell
-colorCell k i (CellChar c b r _) = CellChar c b r (Just (k, i))
+colorCell k i (CellChar c b r _) = CellChar c b r (Just $ ANSIColorInfo (k, i))
 colorCell _ _ Transparent        = Transparent
+
+rgbColorCell :: Colour Float -> Cell -> Cell
+rgbColorCell k (CellChar c b r _) = CellChar c b r $ Just (RGBColorInfo k)
+rgbColorCell _ Transparent        = Transparent
+
+paletteColorCell :: Word8 -> Cell -> Cell
+paletteColorCell k (CellChar c b r _) = CellChar c b r $ Just (PaletteColorInfo k)
+paletteColorCell _ Transparent        = Transparent
 
 boldCell :: Cell -> Cell
 boldCell (CellChar c _ r k) = CellChar c True r k
@@ -182,7 +196,7 @@ cellChar :: Cell -> Char
 cellChar (CellChar c _ _ _) = c
 cellChar Transparent        = ' '
 
-cellColor :: Cell -> Maybe (CA.Color, CA.ColorIntensity)
+cellColor :: Cell -> Maybe ColorInfo
 cellColor (CellChar _ _ _ k) = k
 cellColor Transparent        = Nothing
 

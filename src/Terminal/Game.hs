@@ -95,6 +95,11 @@ module Terminal.Game ( -- * Running
                        Color(..), ColorIntensity(..),
                        color, bold, invert,
 
+                       -- Non-standard colors
+                       rgbColor, paletteColor,
+                       sRGB24, sRGBBounded, sRGB, sRGB24read,
+                       xterm6LevelRGB, xterm24LevelGray, xtermSystem,
+
                        -- *** Alternative origins
                        -- $origins
                        (%^>), (%.<), (%.>),
@@ -136,6 +141,7 @@ import Terminal.Game.Layer.Object as O
 import Terminal.Game.Plane
 import Terminal.Game.Random
 import Text.LineBreak
+import Data.Colour.SRGB ( sRGB24, sRGBBounded, sRGB, sRGB24read )
 
 import qualified Control.Monad as CM
 
