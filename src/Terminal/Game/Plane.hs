@@ -98,11 +98,11 @@ colorCell k i (CellChar c b r _) = CellChar c b r (Just $ ANSIColorInfo (k, i))
 colorCell _ _ Transparent        = Transparent
 
 rgbColorCell :: Colour Float -> Cell -> Cell
-rgbColorCell k (CellChar c b r _) = CellChar c b r $ Just (RGBColorInfo k)
+rgbColorCell k (CellChar c b r _) = CellChar c b r (Just $ RGBColorInfo k)
 rgbColorCell _ Transparent        = Transparent
 
 paletteColorCell :: Word8 -> Cell -> Cell
-paletteColorCell k (CellChar c b r _) = CellChar c b r $ Just (PaletteColorInfo k)
+paletteColorCell k (CellChar c b r _) = CellChar c b r (Just $ PaletteColorInfo k)
 paletteColorCell _ Transparent        = Transparent
 
 boldCell :: Cell -> Cell
