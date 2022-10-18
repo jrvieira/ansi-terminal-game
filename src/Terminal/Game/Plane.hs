@@ -41,14 +41,17 @@ type Height = Int
 type Bold     = Bool
 type Reversed = Bool
 
-data ColorInfo = ANSIColorInfo (CA.Color, CA.ColorIntensity) | RGBColorInfo (Colour Float) | PaletteColorInfo Word8
-          deriving (Show, Eq, Ord)
+data ColorInfo = ANSIColorInfo (CA.Color, CA.ColorIntensity)
+               | RGBColorInfo (Colour Float)
+               | PaletteColorInfo Word8
+               deriving (Show, Eq, Ord)
 
 instance Eq a => Ord (Colour a) where
-   compare _ _ = EQ
+    compare _ _ = EQ
 
 -- can be an ASCIIChar or a special, transparent character
-data Cell = CellChar Char Bold Reversed (Maybe ColorInfo) | Transparent
+data Cell = CellChar Char Bold Reversed (Maybe ColorInfo)
+          | Transparent
           deriving (Show, Eq, Ord, G.Generic)
         -- I found no meaningful speed improvements by making this
         -- only w/ 1 constructor.
